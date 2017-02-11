@@ -1,0 +1,16 @@
+{
+  "name": "web_request",
+  "version": "1.0.0",
+  "description": "my test",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+	"test_twse_request": "node twse_request/test_twse_request.js",
+    "test": "node twse_request/test_twse_request.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies" : {
+    "request": "2.79.0"
+  }
+}

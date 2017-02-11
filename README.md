@@ -1,4 +1,6 @@
 # FinancialStatements
 use nodejs for Financial statements
 
-my first commit
+# run
+npm install
+npm start
