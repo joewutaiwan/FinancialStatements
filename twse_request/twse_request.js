@@ -12,23 +12,23 @@ const uri_set = {
 	4: StockholdersEquityStatementBaseUri
 };
 
-const settings = 'encodeURIComponent=1&step=1&firstin=1&off=1&keyword4=&code1=&TYPEK2=&checkbtn=&queryName=co_id&inpuType=co_id&TYPEK=all&isnew=true&';
+const settings = 'encodeURIComponent=1&step=1&firstin=1&off=1&keyword4=&code1=&TYPEK2=&checkbtn=&queryName=co_id&inpuType=co_id&TYPEK=all&';
 
-var Error = function (para, err, httpResponse, body) {
+var Error = function (para, error, httpResponse, body) {
 	return {
 		success: false,
 		para: para,
-		err: err,
+		error: error,
 		httpResponse: httpResponse,
 		body: body
 	};
 }
 
-var Success = function (para, err, httpResponse, body) {
+var Success = function (para, error, httpResponse, body) {
 	return {
 		success: true,
 		para: para,
-		err: err,
+		error: error,
 		httpResponse: httpResponse,
 		body: body
 	};
@@ -43,23 +43,24 @@ var getData = function (para, callback) {
 
 	var url = uri_set[para.type.toString()];
 	url += '?' + settings;
+	url += '&isnew=false';
 	url += '&co_id=' + para.company;
 	url += '&year=' + para.year;
 	url += '&season=' + para.season;
 
-	//console.log(url);
+	console.log(url);
 
-	request.post({url:url, form: {key:'value'}}, function (err, httpResponse, body){
+	request.post({url:url, form: {key:'value'}}, function (error, httpResponse, body){
 		var ret;
-		if (!err && httpResponse.statusCode == 200) {
+		if (!error && httpResponse.statusCode == 200) {
 			if (body.length < 500) {
 				console.log(body.length);
-				ret = Error(para, err, httpResponse, body);
+				ret = Error(para, error, httpResponse, body);
 			} else {
-				ret = Success(para, err, httpResponse, body);
+				ret = Success(para, error, httpResponse, body);
 			}
 		} else {
-			ret = Error(para, err, httpResponse, body);
+			ret = Error(para, error, httpResponse, body);
 		}
 		callback(ret);
 	})
