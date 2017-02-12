@@ -48,7 +48,7 @@ var getData = function (para, callback) {
 	url += '&year=' + para.year;
 	url += '&season=' + para.season;
 
-	console.log(url);
+	//console.log(url);
 
 	request.post({url:url, form: {key:'value'}}, function (error, httpResponse, body){
 		var ret;
