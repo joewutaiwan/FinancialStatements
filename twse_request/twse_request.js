@@ -14,14 +14,30 @@ const uri_set = {
 
 const settings = 'encodeURIComponent=1&step=1&firstin=1&off=1&keyword4=&code1=&TYPEK2=&checkbtn=&queryName=co_id&inpuType=co_id&TYPEK=all&isnew=true&';
 
+var Error = function (para, err, httpResponse, body) {
+	return {
+		success: false,
+		para: para,
+		err: err,
+		httpResponse: httpResponse,
+		body: body
+	};
+}
+
+var Success = function (para, err, httpResponse, body) {
+	return {
+		success: true,
+		para: para,
+		err: err,
+		httpResponse: httpResponse,
+		body: body
+	};
+}
+
 var getData = function (para, callback) { 
 
 	if (!para.type || !para.company || !para.year || !para.season) {
-		callback({
-			success: true,
-			para: para,
-			err: 'para error'
-		});
+		callback(Error(para, 'para error'));
 		return;
 	}
 
@@ -36,19 +52,14 @@ var getData = function (para, callback) {
 	request.post({url:url, form: {key:'value'}}, function (err, httpResponse, body){
 		var ret;
 		if (!err && httpResponse.statusCode == 200) {
-			ret = {
-				success: false,
-				para: para,
-				body: body
+			if (body.length < 500) {
+				console.log(body.length);
+				ret = Error(para, err, httpResponse, body);
+			} else {
+				ret = Success(para, err, httpResponse, body);
 			}
 		} else {
-			ret = {
-				success: true,
-				para: para,
-				err: err,
-				httpResponse: httpResponse,
-				body: body,
-			}
+			ret = Error(para, err, httpResponse, body);
 		}
 		callback(ret);
 	})
