@@ -5,12 +5,13 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-	"test_twse_request": "node twse_request/test_twse_request.js",
-    "test": "node twse_request/test_twse_request.js"
+	"twse_request": "node twse_request/test_twse_request.js",
+	"html_parser": "node html_parser/test_html_parser.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies" : {
-    "request": "2.79.0"
+    "request": "2.79.0",
+	"htmlparser2": "3.9.2"
   }
 }
