@@ -39,5 +39,6 @@ var callback = function (resp) {
 
 for (i = 0; i < testcase.length; i++) { 
 	var para = testcase[i];
-	TwseRequest.getData(para, callback);
+	var TR = new TwseRequest;
+	TR.getData(para, callback);
 }

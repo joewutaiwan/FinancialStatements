@@ -54,7 +54,6 @@ var getData = function (para, callback) {
 		var ret;
 		if (!error && httpResponse.statusCode == 200) {
 			if (body.length < 500) {
-				console.log(body.length);
 				ret = Error(para, error, httpResponse, body);
 			} else {
 				ret = Success(para, error, httpResponse, body);
@@ -82,8 +81,17 @@ var help = function () {
 	');
 };
 
+function TwseRequest() {
+}
+
+TwseRequest.prototype.getData = getData;
+
+module.exports = TwseRequest; 
+
+/*
 module.exports = {  
   version : '1.0',
   help: help,
   getData : getData
 };
+*/
