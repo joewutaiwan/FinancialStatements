@@ -1,8 +1,7 @@
 var util = require("util");
 var htmlparser = require("htmlparser2");
-var data = {};
 
-var SetData = function (header, number, is_percentage) {
+var SetData = function (data, header, number, is_percentage) {
 	//console.log('SetData: ', header, number, is_percentage);
 	if (!data[header]) {
 		data[header] = {
@@ -18,6 +17,7 @@ var SetData = function (header, number, is_percentage) {
 }
 
 var parse = function (para, rawHtml, callback) {
+	var data = {};
 	var valid_data = false;
 	var open_header = false;
 	var header = '';
@@ -52,7 +52,7 @@ var parse = function (para, rawHtml, callback) {
 				if (header === '母公司暨子公司所持有之母公司庫藏股股數（單位：股）' && parse_count ===1) {
 					return;
 				}
-				SetData(header, number, is_percentage);
+				SetData(data, header, number, is_percentage);
 				parse_count += 1;
 			} else if (text !== '' && open_header){
 				//console.log("-->", text);
@@ -67,7 +67,7 @@ var parse = function (para, rawHtml, callback) {
 	}, {decodeEntities: true});
 	parser.write(rawHtml);
 	parser.end();
-	callback({success: true, data:data});
+	callback({success: true, data:data, para:para});
 };
 
 module.exports = {

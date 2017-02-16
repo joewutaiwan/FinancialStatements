@@ -1,8 +1,7 @@
 var util = require("util");
 var htmlparser = require("htmlparser2");
-var data = {};
 
-var SetData = function (header, number) {
+var SetData = function (data, header, number) {
 	//console.log('SetData: ', header, number);
 	if (!data[header]) {
 		data[header] = {
@@ -13,6 +12,7 @@ var SetData = function (header, number) {
 }
 
 var parse = function (para, rawHtml, callback) {
+	var data = {};
 	var valid_data = false;
 	var open_header = false;
 	var first_run = false;
@@ -45,7 +45,7 @@ var parse = function (para, rawHtml, callback) {
 			if (!isNaN(number) && valid_data && parse_count < 13 && first_run) {
 				//console.log("--->", number);
 				if (parse_count === 12) {
-					SetData(header, number);
+					SetData(data, header, number);
 				}
 				parse_count += 1;
 			} else if (text !== '' && open_header){
@@ -61,7 +61,7 @@ var parse = function (para, rawHtml, callback) {
 	}, {decodeEntities: true});
 	parser.write(rawHtml);
 	parser.end();
-	callback({success: true, data:data});
+	callback({success: true, data:data, para:para});
 };
 
 module.exports = {

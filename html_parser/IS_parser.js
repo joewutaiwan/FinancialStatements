@@ -42,9 +42,8 @@ var data = {
 	DilutedEarningsPerShare:null                                       //稀釋每股盈餘
 }
 */
-var data = {};
 
-var SetData = function (header, number, is_percentage) {
+var SetData = function (data, header, number, is_percentage) {
 	//console.log('SetData: ', header, number, is_percentage);
 	if (!data[header]) {
 		data[header] = {
@@ -79,6 +78,7 @@ var Success = function (para, error, data) {
 */
 
 var parse = function (para, rawHtml, callback) {
+	var data = {};
 	var valid_data = false;
 	var open_header = false;
 	var header = '';
@@ -110,7 +110,7 @@ var parse = function (para, rawHtml, callback) {
 				if (header === '稀釋每股盈餘' && parse_count ===1) {
 					return;
 				}
-				SetData(header, number, is_percentage);
+				SetData(data, header, number, is_percentage);
 				parse_count += 1;
 			} else if (text !== '' && open_header){
 				//console.log("-->", text);
@@ -125,7 +125,7 @@ var parse = function (para, rawHtml, callback) {
 	}, {decodeEntities: true});
 	parser.write(rawHtml);
 	parser.end();
-	callback({success: true, data:data});
+	callback({success: true, data:data, para:para});
 };
 
 module.exports = {
