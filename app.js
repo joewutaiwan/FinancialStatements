@@ -1,32 +1,56 @@
-var TwseRequest = require('./twse_request/twse_request.js');
-var HtmlParser = require('./html_parser/html_parser.js');
-var util = require("util");
+var insertRecord = require('./insertRecord.js');
+var sleep = require('sleep');
+var fs = require('fs');
 
-var para = {
-	type: 4,
-	company : '2498',
-	year: '104',
-	season: '04'
-};
-
-var HtmlParserCallback = function (resp) {
-	if (resp.success) {
-		console.log(resp.data);
-	} else {
-		console.log('[fail] HtmlParserCallback testcase type');
-		console.log('error :' + resp.error);
+function getdata(company) {
+	for (var y = 102; y <= 105; y++) {
+		var tmp = '000' + y;
+		var year = tmp.substring(tmp.length - 3, tmp.length);
+		for (var s = 1; s <= 4; s++) {
+			var tmp = '000' + s;
+			var season = tmp.substring(tmp.length - 2, tmp.length);
+			for (var type = 1; type <= 4; type++) {
+				var para = {
+					type: type,
+					company : company,
+					year: year,
+					season: season
+				};
+				insertRecord.Run(para);
+			}
+		}
 	}
 }
 
-var TwseRequestCallback = function (resp) { 
-	if (resp.success) {
-		HtmlParser.parse(para, resp.body, HtmlParserCallback);
-	} else {
-		console.log('[fail] TwseRequest testcase type :' + resp.para.type);
-		console.log('error :' + resp.error);
-		console.log('httpResponse :' + resp.httpResponse);
-		console.log('body :' + resp.body);
+function readLines(input, func) {
+  var remaining = '';
+
+  input.on('data', function(data) {
+    remaining += data;
+    var index = remaining.indexOf('\n');
+    while (index > -1) {
+      var line = remaining.substring(0, index);
+      remaining = remaining.substring(index + 1);
+      func(line);
+      index = remaining.indexOf(' ');
+	  //sleep.sleep(1);
+    }
+  });
+
+  input.on('end', function() {
+    if (remaining.length > 0) {
+      func(remaining);
+    }
+  });
+}
+
+function func(data) {
+	var number = parseInt(data);
+	if (!isNaN(number)){
+		getdata(String(number));
+		//console.log('Line: ' + number);
 	}
 }
 
-TwseRequest.getData(para, TwseRequestCallback);
+var input = fs.createReadStream('company_list');
+readLines(input, func);

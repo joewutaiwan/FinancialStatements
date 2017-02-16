@@ -16,7 +16,7 @@ var insertDocuments = function(obj, callback) {
 			assert.equal(err, null);
 			assert.equal(1, result.result.n);
 			assert.equal(1, result.ops.length);
-			console.log("Inserted 1 documents into the collection");
+			//console.log("Inserted 1 documents into the collection");
 			db.close();
 			callback();
 		});

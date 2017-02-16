@@ -7,13 +7,14 @@
     "start": "node app.js",
     "twse_request": "node twse_request/test_twse_request.js",
     "html_parser": "node html_parser/test_html_parser.js",
-	"data_base": "node data_base/test_data_base.js"
+    "data_base": "node data_base/test_data_base.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "htmlparser2": "3.9.2",
     "mongodb": "^2.2.22",
-    "request": "2.79.0"
+    "request": "2.79.0",
+    "sleep": "^5.1.0"
   }
 }

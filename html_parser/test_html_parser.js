@@ -29,4 +29,5 @@ var TwseRequestCallback = function (resp) {
 	}
 }
 
-TwseRequest.getData(para, TwseRequestCallback);
+var TR = new TwseRequest;
+TR.getData(para, TwseRequestCallback);
