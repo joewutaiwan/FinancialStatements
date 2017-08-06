@@ -7,6 +7,6 @@ var findCallback = function (err, docs) {
 	console.log('[pass] findDocuments');
 }
 var f_filter = {
-		
+	"company": "8454", "year":"106", "type":4
 };
 DataBase.findDocuments(f_filter, findCallback);
