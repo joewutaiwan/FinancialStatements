@@ -3,14 +3,14 @@ var sleep = require('sleep');
 var fs = require('fs');
 
 const wait_second = 5;
-const start = 13;
-const end = 920;
+const start = 602;
+const end = 1500;
 var count = 0;
 
 var company_array = [];
 
 function getdata(company) {
-	for (var y = 102; y <= 106; y++) {
+	for (var y = 104; y <= 107; y++) {
 		var tmp = '000' + y;
 		var year = tmp.substring(tmp.length - 3, tmp.length);
 		for (var s = 1; s <= 4; s++) {

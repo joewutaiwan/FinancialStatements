@@ -3,12 +3,39 @@ var HtmlParser = require('./html_parser/html_parser.js');
 var DataBase = require('./data_base/data_base.js');
 
 
+CheckDocsContainData = function (para, docs) {
+	if (!docs || docs.length === 0) {
+		return false;
+	}
+	if (para.type === 1 && docs[0].hasOwnProperty('營業利益（損失）')) {
+		//console.log('has 營業利益（損失）');
+		return true;
+	}
+	if (para.type === 2 && docs[0].hasOwnProperty('股本合計')) {
+		//console.log('has 股本合計');
+		return true;
+	}
+	if (para.type === 3 && docs[0].hasOwnProperty('期初現金及約當現金餘額')) {
+		//console.log('has 期初現金及約當現金餘額');
+		return true;
+	}
+	if (para.type === 4 && docs[0].hasOwnProperty('期初餘額')) {
+		//console.log('has 期初餘額');
+		return true;
+	}
+	return false;
+}
+
 var InsertCallback =  function (err, result) {
 	if (err) {
 		console.log('[fail] insertDocuments');
 	} else {
 		//console.log('[pass] insertDocuments');
 	}
+}
+
+var UpdateCallback = function (err, result) {
+	//console.log('[pass] updateDocument', err, result);
 }
 
 var checkExist =  function (resp) {
@@ -18,8 +45,13 @@ var checkExist =  function (resp) {
 		if (err) {
 			console.log('[fail] checkExist findDocuments');
 		} 
-		if (docs.length === 0) {
+		if (!docs || docs.length === 0) {
 			DataBase.insertDocuments(save_obj, InsertCallback);
+		} else if (CheckDocsContainData(f_filter, docs) === false) {
+			var u_update = {
+				$set: save_obj 
+			};
+			DataBase.updateDocument(f_filter, u_update, UpdateCallback);
 		} else {
 			//console.log('Exist');
 		}
@@ -51,7 +83,7 @@ var Run = function (para) {
 		if (err) {
 			console.log('[fail] checkExist findDocuments');
 		} 
-		if (docs.length === 0) {
+		if (CheckDocsContainData(para, docs) === false) {
 			var TR = new TwseRequest;
 			TR.getData(parameter, TwseRequestCallback);
 		} else {

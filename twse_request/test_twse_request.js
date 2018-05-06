@@ -3,24 +3,27 @@ var TwseRequest = require('./twse_request.js');
 var testcase = [{
 	type: 1,
 	company : '2330',
-	year: '105',
-	season: '01'
-},{
+	year: '106',
+	season: '02'
+}];
+
+/*,{
 	type: 2,
-	company : '2495',
+	company : '2208',
 	year: '103',
 	season: '02'
 },{
 	type: 3,
-	company : '2498',
+	company : '2208',
 	year: '104',
 	season: '03'
 },{
 	type: 4,
-	company : '2330',
+	company : '2208',
 	year: '105',
 	season: '04'
 }]
+*/
 
 var callback = function (resp) { 
 	if (resp.success) {
@@ -29,6 +32,7 @@ var callback = function (resp) {
 		console.log('company :' + resp.para.company);
 		console.log('year :' + resp.para.year);
 		console.log('season :' + resp.para.season);
+		console.log(resp);
 	} else {
 		console.log('[fail] TwseRequest testcase type :' + resp.para.type);
 		console.log('error :' + resp.error);
