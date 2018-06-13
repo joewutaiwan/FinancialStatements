@@ -43,7 +43,7 @@ var checkExist =  function (resp) {
 	var f_filter = resp.para;
 	DataBase.findDocuments(f_filter, function (err, docs) {
 		if (err) {
-			console.log('[fail] checkExist findDocuments');
+			console.log('[fail] checkExist findDocuments', err, resp.para);
 		} 
 		if (!docs || docs.length === 0) {
 			DataBase.insertDocuments(save_obj, InsertCallback);
@@ -74,6 +74,9 @@ var TwseRequestCallback = function (resp) {
 		console.log('[fail][TR][' + resp.para.type + '][' + resp.para.company + '][' + resp.para.year + '][' + resp.para.season + ']');
 		//console.log(resp.body);
 	}
+	if (resp.para.callback) {
+		resp.para.callback(true);
+	}
 }
 
 var Run = function (para) {
@@ -82,11 +85,14 @@ var Run = function (para) {
 	DataBase.findDocuments(f_filter, function (err, docs) {
 		if (err) {
 			console.log('[fail] checkExist findDocuments');
+			para.callback(false);
 		} 
 		if (CheckDocsContainData(para, docs) === false) {
 			var TR = new TwseRequest;
+			console.log ("request for :", para);
 			TR.getData(parameter, TwseRequestCallback);
 		} else {
+			para.callback(false);
 			//console.log('Exist');
 		}
 	});
