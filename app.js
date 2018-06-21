@@ -2,6 +2,12 @@ var insertRecord = require('./insertRecord.js');
 var sleep = require('sleep');
 var fs = require('fs');
 
+require('daemon')();
+
+// different pid because we are now forked
+// original parent has exited
+console.log(process.pid);
+
 function UpdateConfig(current_para) {
 	var obj = {
 		current_company: current_para.company
