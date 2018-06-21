@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "daemon": "^1.1.0",
     "htmlparser2": "3.9.2",
     "mongodb": "^2.2.22",
     "request": "2.79.0",

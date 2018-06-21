@@ -31,7 +31,7 @@ function LoadConfig(package_data) {
 }
 
 function genParaList(company, company_list) {
-	for (var y = 104; y <= 107; y++) {
+	for (var y = 103; y <= 107; y++) {
 		var tmp = '000' + y;
 		var year = tmp.substring(tmp.length - 3, tmp.length);
 		for (var s = 1; s <= 4; s++) {

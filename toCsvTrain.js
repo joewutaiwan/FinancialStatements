@@ -7,38 +7,44 @@ var total_count = 0;
 var success_count = 0;
 var Sta = [];
 var HeyKeys = [
-//'已實現銷貨（損）益',
-'稅前淨利（淨損）',
-//'採用權益法認列關聯企業及合資之其他綜合損益之份額-可能重分類至損益之項目',
-'管理費用',
-'本期綜合損益總額',
-//3919'備供出售金融資產未實現評價損益',
-'營業利益（損失）',
-'營業成本合計',
-//'其他收益及費損淨額',
-'其他收入',
-'所得稅費用（利益）合計',
-'營業費用合計',
-'營業外收入及支出合計',
-//2231'採用權益法認列之關聯企業及合資損益之份額淨額',
-//'母公司業主（淨利\／損）',
-//2231'研究發展費用',
-'繼續營業單位本期淨利（淨損）',
-//6267'母公司業主（綜合損益）',
-'本期淨利（淨損）',
-'營業毛利（毛損）',
-'其他利益及損失淨額',
-//3919'國外營運機構財務報表換算之兌換差額',
-'營業毛利（毛損）淨額',
-'營業收入合計',
-//'非控制權益（綜合損益）',
-'其他綜合損益（淨額）',
-//'與可能重分類之項目相關之所得稅',
-//'稀釋每股盈餘',
-//6525'推銷費用',
-//'基本每股盈餘',
-//'非控制權益（淨利\／損）',
-'財務成本淨額'
+	'營業成本合計',
+	'營業毛利（毛損）',
+	'營業費用合計',
+	'營業利益（損失）',
+	'營業外收入及支出合計',
+	'稅前淨利（淨損）',
+	'本期淨利（淨損）',
+	'本期綜合損益總額',
+
+	'流動負債合計',
+	'非流動負債合計',
+	'保留盈餘合計',
+	'非流動資產合計',
+	'流動資產合計',
+	'其他權益合計',
+	'股本合計',
+	'資本公積合計'
+
+];
+var HeyKeysEng = [
+	'A',//'營業成本合計',
+	'B',//'營業毛利（毛損）',
+	'C',//'營業費用合計',
+	'D',//'營業利益（損失）',
+	'E',//'營業外收入及支出合計',
+	'F',//'稅前淨利（淨損）',
+	'G',//'本期淨利（淨損）',
+	'H',//'本期綜合損益總額',
+
+	'I',//'流動負債合計',
+	'J',//'非流動負債合計',
+	'K',//'保留盈餘合計',
+	'L',//'非流動資產合計',
+	'M',//'流動資產合計',
+	'N',//'其他權益合計',
+	'O',//'股本合計',
+	'P'//'資本公積合計'
+
 ];
 
 function LoadCompanyList(package_data) {
@@ -82,7 +88,10 @@ function compare(a,b) {
 function getKeyRecord(record) {
 	var result = [];
 	var check_value = function(key) {
-		if (record.hasOwnProperty(key)) {
+		if (record.hasOwnProperty(key)
+		&& record[key].percentage !== undefined
+		&& record[key].percentage !== null
+		) {
 			result.push(record[key].percentage);
 		} else {
 			if (record.hasOwnProperty("營業利益（損失）")) {
@@ -115,23 +124,62 @@ function validate(x, y) {
 	return false;
 }
 
-function getYdata(record_ago, record) {
-	//return getKeyRecord(record);
-	var result = []
-	if (record_ago.hasOwnProperty("基本每股盈餘") && record.hasOwnProperty("基本每股盈餘")) {
-		if (record["基本每股盈餘"].value  - record_ago["基本每股盈餘"].value > 0) {
-			result.push(1);
+function getYdata(start, end, data) {
+	var result = [];
+	var total_EPS = 0;
+	var some_one_dont_have = false;
+	for (var i = start; i <= end ; i++){
+		if (data[i].hasOwnProperty("基本每股盈餘")) {
+			total_EPS += data[i]["基本每股盈餘"].value
 		} else {
-			result.push(0);
+			some_one_dont_have = true;
 		}
 	}
+	if (!some_one_dont_have) {
+		result.push(total_EPS);
+	}
+
 	return result;
 }
 
-function writeCsv(x, y , first) {
-	var xd, yd;
+function getZdata(start, end, data) {
+	var result = [];
+	var str = data[start].company + data[start].year + data[start].season;
+	result.push(str);
+
+	return result;
+}
+
+function initalCsv() {
+	var xd, yd, zd;
+	xd = HeyKeysEng.join("Q1,") + "Q1,"
+	+ HeyKeysEng.join("Q2,") + "Q2,"
+	+ HeyKeysEng.join("Q3,") + "Q3,"
+	+ HeyKeysEng.join("Q4,") + "Q4\n";
+	yd = "EPS\n";
+	zd = "Company\n";
+	fs.writeFile('xdata.csv', xd, function(err) {
+		if(err) {
+			return console.log(err);
+		}
+	}); 
+	fs.writeFile('ydata.csv', yd, function(err) {
+		if(err) {
+			return console.log(err);
+		}
+	}); 
+	fs.writeFile('zdata.csv', zd, function(err) {
+		if(err) {
+			return console.log(err);
+		}
+	});
+}
+
+function writeCsv(x, y, z) {
+	var xd, yd, zd;
 	xd = x.join(", ") + "\n";
 	yd = y.join(", ") + "\n";
+	zd = z.join(", ") + "\n";
 	fs.appendFile('xdata.csv', xd, function(err) {
 		if(err) {
 			return console.log(err);
@@ -142,42 +190,56 @@ function writeCsv(x, y , first) {
 			return console.log(err);
 		}
 	}); 
+	fs.appendFile('zdata.csv', zd, function(err) {
+		if(err) {
+			return console.log(err);
+		}
+	});
 }
 
 function ProcessToCsv(docs) {
-	docs.sort(compare);
-	//console.log(docs.length);
-	for (var i = 0; i < docs.length - 4 ; i++){
+	var processed = [];
+	for (var i in docs) {
+		if (docs[i].type !== 1 && docs[i].type !== 2) {
+			continue;
+		}
+		var key = docs[i].year + docs[i].season;
+		processed[key] = (processed[key] === undefined) ? docs[i] : Object.assign(processed[key], docs[i]);
+	}
+
+	var final_data = [];
+	for (var i in processed) {
+		if (processed[i] != undefined) {
+			final_data.push(processed[i]);
+		}	
+	}
+
+	final_data.sort(compare);
+	for (var i = 0; i < final_data.length - 4 ; i++){
 		//console.log("test:", docs[i].year, ", ", docs[i].season);
 		//console.log("out:", docs[i + 4].year, ", ", docs[i + 4].season);
-		var x = getXdata(i, i + 3, docs);
-		var y = getYdata(docs[i], docs[i + 4]);
+		var x = getXdata(i, i + 3, final_data);
+		var y = getYdata(i, i + 3, final_data);
+		var z = getZdata(i, i + 3, final_data);
 		if (validate(x, y)) {
 			//console.log (x, y)
-			/*
-			console.log("success add " , docs[i].company ,
-			" x:", docs[i].year, docs[i].season , "+4",
-			" y:", docs[i+4].year,docs[i+4].season 
-			);
-			*/
-			writeCsv(x, y);
+			writeCsv(x, y, z);
 			success_count += 1;
 		}
 		total_count += 1;
 	}
-
 }
 
 function getDBData(company, callback) {
 	var f_filter = {
-		"company": company.toString(),
-		"type": 1
+		"company": company.toString()
 	};
 	DataBase.findDocuments(f_filter, callback);
 }
 
 function Process(package_data) {
-	//package_data.company_list = [1413, 2330, 2498, 8163];
+	//package_data.company_list = [2330, 2498, 8163];
+	initalCsv();
 	return new Promise((resolve, reject) => {
 		(function loop(i) {
 			if (i < package_data.company_list.length) new Promise((resolve, reject) => {
@@ -198,7 +260,6 @@ function Process(package_data) {
 }
 
 function main() {
-	
 	var package_data = {};
 	LoadCompanyList(package_data)
 	.then(
